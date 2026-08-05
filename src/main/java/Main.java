@@ -44,18 +44,41 @@ class Main {
                     break;
 
                 case 4:
-                    System.out.print("enter ip: ");
-                    ip = sc.nextLine();
-
-                    System.out.print("start port: ");
-                    int start = sc.nextInt();
+                    System.out.print("""
+                                          Single Port - 1
+                                          Multiple Ports - 2
+                                          """);
+                    System.out.print("\nSelect: ");
+                    int select = sc.nextInt();
                     sc.nextLine();
 
-                    System.out.print("end port: ");
-                    int end = sc.nextInt();
-                    sc.nextLine();
+                    if (select == 1) {
+                        System.out.print("enter ip: ");
+                        String ip2 = sc.nextLine();
 
-                    scanner.scanPort(ip, start, end);
+                        System.out.print("enter port: ");
+                        int port = sc.nextInt();
+                        sc.nextLine();
+
+                        scanner.scanPort(ip2, port);
+
+                    } else if (select == 2) {
+                        System.out.print("enter ip: ");
+                        String ip1 = sc.nextLine();
+
+                        System.out.print("start port: ");
+                        int start = sc.nextInt();
+                        sc.nextLine();
+
+                        System.out.print("end port: ");
+                        int end = sc.nextInt();
+                        sc.nextLine();
+
+                        scanner.scanPorts(ip1, start, end);
+
+                    } else {
+                        System.out.println("Invalid choice");
+                    }
                     break;
 
                 case 5:
