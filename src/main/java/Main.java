@@ -1,10 +1,15 @@
-import scanner.IPScanner;
+import scanner.IPScan;
+import scanner.PingScan;
+import scanner.PortScan;
+
 import java.util.Scanner;
 
-class Main {
+public class Main {
     public static void main(String[] args) {
 
-        IPScanner scanner = new IPScanner();
+        IPScan scanner = new IPScan();
+        PingScan ping = new PingScan();
+        PortScan portScan = new PortScan();
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -36,7 +41,7 @@ class Main {
                 case 3:
                     System.out.print("enter ip: ");
                     ip = sc.nextLine();
-                    if (scanner.isHostAlive(ip)) {
+                    if (ping.isHostAlive(ip)) {
                         System.out.println("Host is up");
                     } else {
                         System.out.println("Host is down");
@@ -60,7 +65,7 @@ class Main {
                         int port = sc.nextInt();
                         sc.nextLine();
 
-                        scanner.scanPort(ip, port);
+                        portScan.scanPort(ip, port);
 
                     } else if (select == 2) {
                         System.out.print("enter ip: ");
@@ -74,7 +79,7 @@ class Main {
                         int end = sc.nextInt();
                         sc.nextLine();
 
-                        scanner.scanPorts(ip, start, end);
+                        portScan.scanPorts(ip, start, end);
 
                     } else {
                         System.out.println("Invalid choice");
