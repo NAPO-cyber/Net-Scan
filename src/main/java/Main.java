@@ -54,17 +54,17 @@ class Main {
 
                     if (select == 1) {
                         System.out.print("enter ip: ");
-                        String ip2 = sc.nextLine();
+                        ip = sc.nextLine();
 
                         System.out.print("enter port: ");
                         int port = sc.nextInt();
                         sc.nextLine();
 
-                        scanner.scanPort(ip2, port);
+                        scanner.scanPort(ip, port);
 
                     } else if (select == 2) {
                         System.out.print("enter ip: ");
-                        String ip1 = sc.nextLine();
+                        ip = sc.nextLine();
 
                         System.out.print("start port: ");
                         int start = sc.nextInt();
@@ -74,7 +74,7 @@ class Main {
                         int end = sc.nextInt();
                         sc.nextLine();
 
-                        scanner.scanPorts(ip1, start, end);
+                        scanner.scanPorts(ip, start, end);
 
                     } else {
                         System.out.println("Invalid choice");
