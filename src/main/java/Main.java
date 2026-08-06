@@ -1,5 +1,4 @@
 import scanner.IPScan;
-import scanner.PingScan;
 import scanner.PortScan;
 
 import java.util.Scanner;
@@ -8,18 +7,15 @@ public class Main {
     public static void main(String[] args) {
 
         IPScan scanner = new IPScan();
-        PingScan ping = new PingScan();
         PortScan portScan = new PortScan();
         Scanner sc = new Scanner(System.in);
 
         while (true) {
 
             System.out.println("\n========== NET SCAN ==========");
-            System.out.println("1 Scan single IP");
-            System.out.println("2 Scan subnet");
-            System.out.println("3 Host discovery (ping scan)");
-            System.out.println("4 port scan");
-            System.out.println("5 Exit");
+            System.out.println("1 Scan IP / Subnet");
+            System.out.println("2 Port scan");
+            System.out.println("3 Exit");
 
             System.out.print("\nenter your choice: ");
             int choice = sc.nextInt();
@@ -27,31 +23,9 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    System.out.print("enter ip: ");
-                    String ip = sc.nextLine();
-                    scanner.scanSingleIP(ip);
-                    break;
-
-                case 2:
-                    System.out.print("enter subnet: ");
-                    String subnet = sc.nextLine();
-                    scanner.scanSubnet(subnet);
-                    break;
-
-                case 3:
-                    System.out.print("enter ip: ");
-                    ip = sc.nextLine();
-                    if (ping.isHostAlive(ip)) {
-                        System.out.println("Host is up");
-                    } else {
-                        System.out.println("Host is down");
-                    }
-                    break;
-
-                case 4:
                     System.out.print("""
-                                          Single Port - 1
-                                          Multiple Ports - 2
+                                          IP scan - 1
+                                          Subnet scan - 2
                                           """);
                     System.out.print("\nSelect: ");
                     int select = sc.nextInt();
@@ -59,7 +33,29 @@ public class Main {
 
                     if (select == 1) {
                         System.out.print("enter ip: ");
-                        ip = sc.nextLine();
+                        String ip = sc.nextLine();
+                        scanner.scanSingleIP(ip);
+                    } else if (select == 2) {
+                        System.out.print("enter subnet: ");
+                        String subnet = sc.nextLine();
+                        scanner.scanSubnet(subnet);
+                    } else {
+                        System.out.println("invalid choice");
+                    }
+                    break;
+
+                case 2:
+                    System.out.print("""
+                                          Single Port - 1
+                                          Multiple Ports - 2
+                                          """);
+                    System.out.print("\nSelect: ");
+                    select = sc.nextInt();
+                    sc.nextLine();
+
+                    if (select == 1) {
+                        System.out.print("enter ip: ");
+                        String ip = sc.nextLine();
 
                         System.out.print("enter port: ");
                         int port = sc.nextInt();
@@ -69,7 +65,7 @@ public class Main {
 
                     } else if (select == 2) {
                         System.out.print("enter ip: ");
-                        ip = sc.nextLine();
+                        String ip = sc.nextLine();
 
                         System.out.print("start port: ");
                         int start = sc.nextInt();
@@ -86,7 +82,7 @@ public class Main {
                     }
                     break;
 
-                case 5:
+                case 3:
                     System.out.println("exiting...");
                     sc.close();
                     System.exit(0);
