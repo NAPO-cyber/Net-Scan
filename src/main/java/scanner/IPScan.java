@@ -1,13 +1,13 @@
 package scanner;
 
-public class IPScan {
+import java.net.InetAddress;
 
-    PingScan ping = new PingScan();
+public class IPScan {
 
     public void scanSingleIP(String ip) {
         System.out.println("Scanning... " + ip);
 
-        if (ping.isHostAlive(ip)) {
+        if (isHostAlive(ip)) {
             System.out.println("host is up...");
         } else {
             System.out.println("host is down...");
@@ -35,11 +35,21 @@ public class IPScan {
         for (int i=1; i<=254; i++) {
             String ip = base + "." + i;
 
-            if (ping.isHostAlive(ip)) {
+            if (isHostAlive(ip)) {
                 System.out.println("Host found: " + ip);
                 return;
             }
         }
         System.out.println("\nSubnet scan completed.");
+    }
+
+    private boolean isHostAlive(String ip) {
+        try {
+            InetAddress address = InetAddress.getByName(ip);
+            return address.isReachable(1000);
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
