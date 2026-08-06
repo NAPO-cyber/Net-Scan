@@ -15,7 +15,8 @@ public class Main {
             System.out.println("\n========== NET SCAN ==========");
             System.out.println("1 Scan IP / Subnet");
             System.out.println("2 Port scan");
-            System.out.println("3 Exit");
+            System.out.println("3 Service Detection");
+            System.out.println("4 Exit");
 
             System.out.print("\nenter your choice: ");
             int choice = sc.nextInt();
@@ -83,6 +84,20 @@ public class Main {
                     break;
 
                 case 3:
+                    System.out.print("Enter IP: ");
+                    String ip = sc.nextLine();
+
+                    System.out.print("Start Port: ");
+                    int start = sc.nextInt();
+
+                    System.out.print("End Port: ");
+                    int end = sc.nextInt();
+                    sc.nextLine();
+
+                    portScan.scanPorts(ip, start, end);
+                    break;
+
+                case 4:
                     System.out.println("exiting...");
                     sc.close();
                     System.exit(0);

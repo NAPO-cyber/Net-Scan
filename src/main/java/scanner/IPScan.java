@@ -37,7 +37,6 @@ public class IPScan {
 
             if (isHostAlive(ip)) {
                 System.out.println("Host found: " + ip);
-                return;
             }
         }
         System.out.println("\nSubnet scan completed.");
