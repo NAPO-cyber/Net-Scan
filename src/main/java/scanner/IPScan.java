@@ -8,31 +8,41 @@ public class IPScan {
         System.out.println("Scanning... " + ip);
 
         if (isHostAlive(ip)) {
-            System.out.println("host is up...");
+            System.out.println("Host is up.");
         } else {
-            System.out.println("host is down...");
+            System.out.println("Host is down.");
         }
     }
-
 
     public void scanSubnet(String subnet) {
         String[] parts = subnet.split("/");
 
         if (parts.length != 2) {
-            System.out.println("Invalid subnet format");
+            System.out.println("Invalid subnet format.");
             return;
         }
-        int prefix = Integer.parseInt(parts[1]);
+
+        int prefix;
+
+        try {
+            prefix = Integer.parseInt(parts[1]);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid subnet prefix.");
+            return;
+        }
 
         if (prefix != 24) {
             System.out.println("Only /24 subnet is supported.");
             return;
         }
 
-        String base = parts[0].substring(0, parts[0].lastIndexOf("."));
-        System.out.println("\n Scanning subnet " + subnet + "...\n");
+        String base = parts[0].substring(
+                0,
+                parts[0].lastIndexOf(".")
+        );
+        System.out.println("\nScanning subnet " + subnet + "...\n");
 
-        for (int i=1; i<=254; i++) {
+        for (int i = 1; i <= 254; i++) {
             String ip = base + "." + i;
 
             if (isHostAlive(ip)) {
