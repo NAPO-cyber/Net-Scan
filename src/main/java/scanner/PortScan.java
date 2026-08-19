@@ -6,30 +6,21 @@ import java.net.Socket;
 
 public class PortScan {
 
-    ServiceDetector service = new ServiceDetector();
-
     public void scanPorts(String ip, int startPort, int endPort) {
-        System.out.println("\n Scanning ports on " + ip + "...");
+        System.out.println("\nScanning ports on " + ip + "...");
 
         int total = endPort - startPort + 1;
         int current = 0;
 
-        for (int port=startPort; port<=endPort; port++) {
-
+        for (int port = startPort; port <= endPort; port++) {
             current++;
-
             try (Socket socket = new Socket()) {
-
                 socket.connect(new InetSocketAddress(ip, port), 200);
-                System.out.println("-----------------------");
-//                System.out.println("Port " + port + " OPEN");
 
-                if (socket.isConnected()) {
-                    String s = service.detectService(port);
-                    System.out.printf("Port %-5d OPEN   %-15s%n", port, s);
-                }
-
+                String service = ServiceDetector.detectService(port);
+                System.out.printf("\nPort %-4d OPEN   %-15s%n", port, service);
             } catch (IOException ignored) {
+                // port is closed
             }
             PortProgress.showProgress(current, total);
         }
@@ -39,26 +30,16 @@ public class PortScan {
     public void scanPort(String ip, int port) {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(ip, port), 200);
+
+            String service = ServiceDetector.detectService(port);
+
             System.out.println("-----------------------");
             System.out.println("Port " + port + " OPEN");
+            System.out.println("Service: " + service);
 
         } catch (IOException ignored) {
-            // closed port
+            System.out.println("Port " + port + " is closed.");
         }
         System.out.println("\nPort scan completed.");
-    }
-}
-
-// a helper class
-class PortProgress {
-
-    static void showProgress(int current, int total) {
-        int percent = (current * 100) / total;
-        System.out.print("\rProgress: " + percent + "%");
-    }
-
-    static void complete() {
-        System.out.println("\nProgress: 100%");
-        System.out.println("Scan complete.");
     }
 }
