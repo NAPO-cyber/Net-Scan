@@ -6,101 +6,66 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        IPScan scanner = new IPScan();
-        PortScan portScan = new PortScan();
         Scanner sc = new Scanner(System.in);
+        IPScan ipScan = new IPScan();
+        PortScan portScan = new PortScan();
 
         while (true) {
 
-            System.out.println("\n========== NET SCAN ==========");
-            System.out.println("1 Scan IP / Subnet");
-            System.out.println("2 Port scan");
-            System.out.println("3 Service Detection");
-            System.out.println("4 Exit");
-
+            System.out.println("\n===== Network Scanner =====");
+            System.out.println("1. Scan Single IP");
+            System.out.println("2. Scan Subnet");
+            System.out.println("3. Scan Single Port");
+            System.out.println("4. Scan Port Range");
+            System.out.println("5. Exit");
+            System.out.print("Choose option: ");
             System.out.print("\nenter your choice: ");
+
             int choice = sc.nextInt();
             sc.nextLine();
 
             switch (choice) {
                 case 1:
-                    System.out.print("""
-                                          IP scan - 1
-                                          Subnet scan - 2
-                                          """);
-                    System.out.print("\nSelect: ");
-                    int select = sc.nextInt();
-                    sc.nextLine();
+                    System.out.print("Enter IP: ");
+                    String ip = sc.nextLine();
 
-                    if (select == 1) {
-                        System.out.print("enter ip: ");
-                        String ip = sc.nextLine();
-                        scanner.scanSingleIP(ip);
-                    } else if (select == 2) {
-                        System.out.print("enter subnet: ");
-                        String subnet = sc.nextLine();
-                        scanner.scanSubnet(subnet);
-                    } else {
-                        System.out.println("invalid choice");
-                    }
+                    ipScan.scanSingleIP(ip);
                     break;
 
                 case 2:
-                    System.out.print("""
-                                          Single Port - 1
-                                          Multiple Ports - 2
-                                          """);
-                    System.out.print("\nSelect: ");
-                    select = sc.nextInt();
-                    sc.nextLine();
+                    System.out.print("Enter subnet (example: 192.168.1.0/24): ");
+                    String subnet = sc.nextLine();
 
-                    if (select == 1) {
-                        System.out.print("enter ip: ");
-                        String ip = sc.nextLine();
-
-                        System.out.print("enter port: ");
-                        int port = sc.nextInt();
-                        sc.nextLine();
-
-                        portScan.scanPort(ip, port);
-
-                    } else if (select == 2) {
-                        System.out.print("enter ip: ");
-                        String ip = sc.nextLine();
-
-                        System.out.print("start port: ");
-                        int start = sc.nextInt();
-                        sc.nextLine();
-
-                        System.out.print("end port: ");
-                        int end = sc.nextInt();
-                        sc.nextLine();
-
-                        portScan.scanPorts(ip, start, end);
-
-                    } else {
-                        System.out.println("Invalid choice");
-                    }
+                    ipScan.scanSubnet(subnet);
                     break;
 
                 case 3:
                     System.out.print("Enter IP: ");
-                    String ip = sc.nextLine();
+                    String portIP = sc.nextLine();
 
-                    System.out.print("Start Port: ");
-                    int start = sc.nextInt();
+                    System.out.print("Enter port: ");
+                    int port = sc.nextInt();
 
-                    System.out.print("End Port: ");
-                    int end = sc.nextInt();
-                    sc.nextLine();
-
-                    portScan.scanPorts(ip, start, end);
+                    portScan.scanPort(portIP, port);
                     break;
 
                 case 4:
-                    System.out.println("exiting...");
+                    System.out.print("Enter IP: ");
+                    String targetIP = sc.nextLine();
+
+                    System.out.print("Start port: ");
+                    int startPort = sc.nextInt();
+
+                    System.out.print("End port: ");
+                    int endPort = sc.nextInt();
+
+                    portScan.scanPorts(targetIP, startPort, endPort);
+                    break;
+
+                case 5:
+                    System.out.println("Exiting...");
                     sc.close();
-                    System.exit(0);
+                    return;
 
                 default:
                     System.out.println("invalid choice");
