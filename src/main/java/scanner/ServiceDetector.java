@@ -1,7 +1,7 @@
 package scanner;
 
 public class ServiceDetector {
-    public String detectService(int port) {
+    public static String detectService(int port) {
 
         return switch (port) {
             case 20, 21 -> "FTP";
@@ -12,9 +12,9 @@ public class ServiceDetector {
             case 80 -> "HTTP";
             case 110 -> "POP3";
             case 135 -> "RPC";
-            case 445 -> "SMB";
             case 143 -> "IMAP";
             case 443 -> "HTTPS";
+            case 445 -> "SMB";
             case 3306 -> "MySQL";
             case 5432 -> "PostgreSQL";
             case 6379 -> "Redis";
