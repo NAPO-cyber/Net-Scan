@@ -26,21 +26,21 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    System.out.print("Enter IP: ");
+                    System.out.print("\nEnter IP: ");
                     String ip = sc.nextLine();
 
                     ipScan.scanSingleIP(ip);
                     break;
 
                 case 2:
-                    System.out.print("Enter subnet (example: 192.168.1.0/24): ");
+                    System.out.print("\nEnter subnet (example: 192.168.1.0/24): ");
                     String subnet = sc.nextLine();
 
                     ipScan.scanSubnet(subnet);
                     break;
 
                 case 3:
-                    System.out.print("Enter IP: ");
+                    System.out.print("\nEnter IP: ");
                     String portIP = sc.nextLine();
 
                     System.out.print("Enter port: ");
@@ -50,7 +50,7 @@ public class Main {
                     break;
 
                 case 4:
-                    System.out.print("Enter IP: ");
+                    System.out.print("\nEnter IP: ");
                     String targetIP = sc.nextLine();
 
                     System.out.print("Start port: ");
