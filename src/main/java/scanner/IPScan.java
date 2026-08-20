@@ -9,6 +9,9 @@ public class IPScan {
 
         if (isHostAlive(ip)) {
             System.out.println("Host is up.");
+
+            String hostname = getHostName(ip);
+            System.out.println("Hostname: " + hostname);
         } else {
             System.out.println("Host is down.");
         }
@@ -47,9 +50,27 @@ public class IPScan {
 
             if (isHostAlive(ip)) {
                 System.out.println("Host found: " + ip);
+
+                String hostname = getHostName(ip);
+                System.out.println("Hostname: " + hostname);
             }
         }
         System.out.println("\nSubnet scan completed.");
+    }
+
+    public String getHostName(String ip) {
+        try {
+            InetAddress address = InetAddress.getByName(ip);
+            String hostname = address.getHostName();
+
+            if (hostname.equals(ip)) {
+                return "Unknown";
+            }
+
+            return hostname;
+        } catch (Exception e) {
+            return "unknown";
+        }
     }
 
     private boolean isHostAlive(String ip) {
