@@ -3,10 +3,15 @@ package scanner;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PortScan {
 
     public void scanPorts(String ip, int startPort, int endPort) {
+
+        List<ScanResult> results = new ArrayList<>();
+
         System.out.println("\nScanning ports on " + ip + "...");
 
         int total = endPort - startPort + 1;
@@ -18,7 +23,12 @@ public class PortScan {
                 socket.connect(new InetSocketAddress(ip, port), 200);
 
                 String service = ServiceDetector.detectService(port);
-                System.out.printf("\nPort %-4d OPEN   %-15s%n", port, service);
+                System.out.printf("\nPort %-4d OPEN   %-15s%n",
+                        port,
+                        service);
+
+                results.add(new ScanResult(ip, port, service));
+                JsonSaver.save(results);
             } catch (IOException ignored) {
                 // port is closed
             }
