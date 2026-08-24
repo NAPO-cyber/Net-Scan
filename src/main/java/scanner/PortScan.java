@@ -3,38 +3,33 @@ package scanner;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PortScan {
 
-    public void scanPorts(String ip, int startPort, int endPort) {
+    public String scanPorts(String ip, int startPort, int endPort) {
 
-        List<ScanResult> results = new ArrayList<>();
-
-        System.out.println("\nScanning ports on " + ip + "...");
-
-        int total = endPort - startPort + 1;
-        int current = 0;
+        StringBuilder output = new StringBuilder();
+        output.append("Scanning ").append(ip).append("\n\n");
 
         for (int port = startPort; port <= endPort; port++) {
-            current++;
+
             try (Socket socket = new Socket()) {
                 socket.connect(new InetSocketAddress(ip, port), 200);
 
                 String service = ServiceDetector.detectService(port);
-                System.out.printf("\nPort %-4d OPEN   %-15s%n",
-                        port,
-                        service);
 
-                results.add(new ScanResult(ip, port, service));
-                JsonSaver.save(results);
+                output.append("Port ")
+                        .append(port)
+                        .append(" OPEN - ")
+                        .append(service)
+                        .append("\n");
+
             } catch (IOException ignored) {
                 // port is closed
             }
-            PortProgress.showProgress(current, total);
         }
-        PortProgress.complete();
+        output.append("\nScan Complete.");
+        return output.toString();
     }
 
     public void scanPort(String ip, int port) {
