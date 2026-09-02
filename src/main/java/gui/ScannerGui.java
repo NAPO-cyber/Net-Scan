@@ -125,14 +125,6 @@ public class ScannerGui extends Application {
                             output.append(
                                     "Subnet scanning started...\n\n"
                             );
-
-                            // temporary:
-                            ipScan.scanSubnet(ip);
-
-                            output.append(
-                                    "\nSubnet scan completed."
-                            );
-
                             break;
 
                         case "Scan Single Port":
