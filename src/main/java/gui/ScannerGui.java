@@ -9,7 +9,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-
 import model.HostResult;
 import model.ScanResult;
 import scanner.IPScan;
@@ -96,10 +95,7 @@ public class ScannerGui extends Application {
 
         scanButton.setMaxWidth(Double.MAX_VALUE);
 
-        scanButton.setStyle(
-                "-fx-font-weight: bold;" +
-                        "-fx-padding: 10px;"
-        );
+        scanButton.setStyle("-fx-font-weight: bold;" + "-fx-padding: 10px;");
 
         // Results
         Label resultsLabel = new Label("Results");
@@ -121,12 +117,9 @@ public class ScannerGui extends Application {
 
             String operation = operationBox.getValue();
 
-            boolean showPorts =
-                    operation.equals("Scan Single Port") ||
-                            operation.equals("Scan Port Range");
+            boolean showPorts = operation.equals("Scan Single Port") || operation.equals("Scan Port Range");
 
-            boolean showEndPort =
-                    operation.equals("Scan Port Range");
+            boolean showEndPort = operation.equals("Scan Port Range");
 
             portBox.setVisible(showPorts);
             portBox.setManaged(showPorts);
@@ -246,11 +239,7 @@ public class ScannerGui extends Application {
                             );
 
                             List<ScanResult> singlePort =
-                                    portScan.scanPorts(
-                                            ip,
-                                            port,
-                                            port
-                                    );
+                                    portScan.scanPorts(ip, port, port);
 
                             if (singlePort.isEmpty()) {
 
@@ -288,12 +277,10 @@ public class ScannerGui extends Application {
                                     endPortField.getText()
                             );
 
-                            List<ScanResult> rangeResults =
-                                    portScan.scanPorts(
-                                            ip,
-                                            startPort,
-                                            endPort
-                                    );
+                            List<ScanResult> rangeResults = portScan.scanPorts(ip, startPort, endPort);
+
+                            String hostname = ipScan.getHostName(ip);
+                            String os = ipScan.detectOS(ip);
 
                             if (rangeResults.isEmpty()) {
 

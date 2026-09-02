@@ -1,10 +1,5 @@
-import gui.ScannerGui;
-import model.ScanResult;
 import scanner.IPScan;
-import scanner.JsonSaver;
 import scanner.PortScan;
-
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -63,27 +58,8 @@ public class Main {
                     System.out.print("End port: ");
                     int endPort = sc.nextInt();
 
-                    List<ScanResult> results = portScan.scanPorts(targetIP, startPort, endPort);
+                    portScan.scanPorts(targetIP, startPort, endPort);
 
-                    for (ScanResult result: results) {
-                        System.out.println(
-                                "Port " + result.getPort()
-                                + " OPEN - "
-                                + result.getService()
-                        );
-                    }
-
-                    ipScan = new IPScan();
-
-                    String hostname = ipScan.getHostName(targetIP);
-                    String os = ipScan.detectOS(targetIP);
-
-                    JsonSaver.save(
-                            targetIP,
-                            hostname,
-                            os,
-                            results
-                    );
                     break;
 
                 case 5:
