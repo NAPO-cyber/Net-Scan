@@ -2,6 +2,9 @@ package scanner;
 
 import java.net.InetAddress;
 import java.util.Scanner;
+import model.HostResult;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IPScan {
 
@@ -21,13 +24,14 @@ public class IPScan {
         }
     }
 
-    public void scanSubnet(String subnet) {
+    public List<HostResult> scanSubnet(String subnet) {
+
+        List<HostResult> results = new ArrayList<>();
 
         String[] parts = subnet.split("/");
 
         if (parts.length != 2) {
-            System.out.println("Invalid subnet format.");
-            return;
+            return results;
         }
 
         String baseIP = parts[0];
@@ -36,29 +40,20 @@ public class IPScan {
         try {
             prefix = Integer.parseInt(parts[1]);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid subnet prefix.");
-            return;
+            return results;
         }
 
         if (prefix != 24) {
-            System.out.println("Only /24 subnet is supported.");
-            return;
+            return results;
         }
 
         String[] ipParts = baseIP.split("\\.");
 
         if (ipParts.length != 4) {
-            System.out.println("Invalid IP address.");
-            return;
+            return results;
         }
 
-        String network = ipParts[0] + "."
-                + ipParts[1] + "."
-                + ipParts[2];
-
-        System.out.println("\nScanning subnet " + subnet + "...\n");
-
-        int found = 0;
+        String network = ipParts[0] + "." + ipParts[1] + "." + ipParts[2];
 
         for (int i = 1; i <= 254; i++) {
 
@@ -66,17 +61,14 @@ public class IPScan {
 
             if (isHostAlive(ip)) {
 
-                found++;
-
-                System.out.println("Host found: " + ip);
-
                 String hostname = getHostName(ip);
-                System.out.println("Hostname: " + hostname);
+                String os = detectOS(ip);
+
+                results.add(
+                        new HostResult(ip, hostname, os));
             }
         }
-
-        System.out.println("\nSubnet scan completed.");
-        System.out.println("Hosts found: " + found);
+        return results;
     }
 
     public String getHostName(String ip) {
@@ -135,7 +127,6 @@ public class IPScan {
                     if (ttl <= 128) {
                         return "Windows (estimated)";
                     }
-
                     return "Network Device/Other (estimated)";
                 }
             }

@@ -2,10 +2,15 @@ package gui;
 
 import javafx.application.Application;
 import javafx.concurrent.Task;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+
+import model.HostResult;
 import model.ScanResult;
 import scanner.IPScan;
 import scanner.PortScan;
@@ -17,7 +22,23 @@ public class ScannerGui extends Application {
     @Override
     public void start(Stage stage) {
 
-        Label operationLabel = new Label("Operation:");
+        // Title
+        Label title = new Label("NET SCAN");
+        title.setStyle(
+                "-fx-font-size: 26px;" +
+                        "-fx-font-weight: bold;"
+        );
+
+        Label subtitle = new Label(
+                "Network discovery and port scanning tool"
+        );
+        subtitle.setStyle(
+                "-fx-font-size: 13px;" +
+                        "-fx-text-fill: #888888;"
+        );
+
+        // Operation
+        Label operationLabel = new Label("Scan Type");
 
         ComboBox<String> operationBox = new ComboBox<>();
 
@@ -29,29 +50,73 @@ public class ScannerGui extends Application {
         );
 
         operationBox.setValue("Scan Single IP");
+        operationBox.setMaxWidth(Double.MAX_VALUE);
 
-        Label ipLabel = new Label("IP Address:");
+        // IP
+        Label ipLabel = new Label("IP Address");
+
         TextField ipField = new TextField();
         ipField.setPromptText("192.168.1.1");
 
-        Label startPortLabel = new Label("Start Port:");
+        // Ports
+        Label startPortLabel = new Label("Start Port");
+
         TextField startPortField = new TextField();
         startPortField.setPromptText("1");
 
-        Label endPortLabel = new Label("End Port:");
+        Label endPortLabel = new Label("End Port");
+
         TextField endPortField = new TextField();
         endPortField.setPromptText("1000");
 
-        Button scanButton = new Button("Start Scan");
+        HBox portBox = new HBox(10);
+
+        VBox startPortBox = new VBox(5);
+        startPortBox.getChildren().addAll(
+                startPortLabel,
+                startPortField
+        );
+
+        VBox endPortBox = new VBox(5);
+        endPortBox.getChildren().addAll(
+                endPortLabel,
+                endPortField
+        );
+
+        HBox.setHgrow(startPortBox, Priority.ALWAYS);
+        HBox.setHgrow(endPortBox, Priority.ALWAYS);
+
+        portBox.getChildren().addAll(
+                startPortBox,
+                endPortBox
+        );
+
+        // Scan button
+        Button scanButton = new Button("START SCAN");
+
+        scanButton.setMaxWidth(Double.MAX_VALUE);
+
+        scanButton.setStyle(
+                "-fx-font-weight: bold;" +
+                        "-fx-padding: 10px;"
+        );
+
+        // Results
+        Label resultsLabel = new Label("Results");
 
         TextArea results = new TextArea();
+
         results.setEditable(false);
+        results.setWrapText(false);
+        results.setPrefHeight(300);
 
-        startPortLabel.setVisible(false);
-        startPortField.setVisible(false);
-        endPortLabel.setVisible(false);
-        endPortField.setVisible(false);
+        VBox.setVgrow(results, Priority.ALWAYS);
 
+        // Hide port fields initially
+        portBox.setVisible(false);
+        portBox.setManaged(false);
+
+        // Operation selection
         operationBox.setOnAction(e -> {
 
             String operation = operationBox.getValue();
@@ -63,11 +128,11 @@ public class ScannerGui extends Application {
             boolean showEndPort =
                     operation.equals("Scan Port Range");
 
-            startPortLabel.setVisible(showPorts);
-            startPortField.setVisible(showPorts);
+            portBox.setVisible(showPorts);
+            portBox.setManaged(showPorts);
 
-            endPortLabel.setVisible(showEndPort);
-            endPortField.setVisible(showEndPort);
+            endPortBox.setVisible(showEndPort);
+            endPortBox.setManaged(showEndPort);
 
             if (operation.equals("Scan Subnet")) {
                 ipField.setPromptText("192.168.1.0/24");
@@ -76,6 +141,7 @@ public class ScannerGui extends Application {
             }
         });
 
+        // Scan
         scanButton.setOnAction(e -> {
 
             String operation = operationBox.getValue();
@@ -92,39 +158,85 @@ public class ScannerGui extends Application {
                     IPScan ipScan = new IPScan();
                     PortScan portScan = new PortScan();
 
-                    StringBuilder output = new StringBuilder();
+                    StringBuilder output =
+                            new StringBuilder();
 
                     switch (operation) {
 
                         case "Scan Single IP":
 
-                            output.append("Scanning ")
-                                    .append(ip)
-                                    .append("\n\n");
+                            output.append(
+                                    "Scanning "
+                            ).append(ip).append("\n\n");
 
                             if (ipScan.isHostAliveForGui(ip)) {
 
-                                output.append("Host is up.\n");
+                                output.append(
+                                        "Host is UP\n\n"
+                                );
 
-                                output.append("Hostname: ")
-                                        .append(ipScan.getHostName(ip))
-                                        .append("\n");
+                                output.append(
+                                        "Hostname: "
+                                ).append(
+                                        ipScan.getHostName(ip)
+                                ).append("\n");
 
-                                output.append("OS: ")
-                                        .append(ipScan.detectOS(ip))
-                                        .append("\n");
+                                output.append(
+                                        "OS: "
+                                ).append(
+                                        ipScan.detectOS(ip)
+                                );
 
                             } else {
-                                output.append("Host is down.");
+
+                                output.append(
+                                        "Host is DOWN"
+                                );
                             }
 
                             break;
 
                         case "Scan Subnet":
 
-                            output.append(
-                                    "Subnet scanning started...\n\n"
-                            );
+                            List<HostResult> hosts =
+                                    ipScan.scanSubnet(ip);
+
+                            if (hosts.isEmpty()) {
+
+                                output.append(
+                                        "No hosts found."
+                                );
+
+                            } else {
+
+                                output.append(
+                                        "Hosts found: "
+                                ).append(
+                                        hosts.size()
+                                ).append("\n\n");
+
+                                for (HostResult host : hosts) {
+
+                                    output.append(
+                                            "Host: "
+                                    ).append(
+                                            host.getIp()
+                                    ).append("\n");
+
+                                    output.append(
+                                            "Hostname: "
+                                    ).append(
+                                            host.getHostname()
+                                    ).append("\n");
+
+                                    output.append(
+                                            "OS: "
+                                    ).append(
+                                            host.getOs()
+                                    ).append("\n\n");
+                                }
+                            }
+
                             break;
 
                         case "Scan Single Port":
@@ -143,7 +255,8 @@ public class ScannerGui extends Application {
                             if (singlePort.isEmpty()) {
 
                                 output.append(
-                                        "Port " + port + " is closed."
+                                        "Port " + port +
+                                                " is CLOSED."
                                 );
 
                             } else {
@@ -153,10 +266,12 @@ public class ScannerGui extends Application {
 
                                     output.append(
                                             "Port "
-                                                    + result.getPort()
-                                                    + " OPEN - "
-                                                    + result.getService()
-                                                    + "\n"
+                                    ).append(
+                                            result.getPort()
+                                    ).append(
+                                            " OPEN - "
+                                    ).append(
+                                            result.getService()
                                     );
                                 }
                             }
@@ -193,11 +308,13 @@ public class ScannerGui extends Application {
 
                                     output.append(
                                             "Port "
-                                                    + result.getPort()
-                                                    + " OPEN - "
-                                                    + result.getService()
-                                                    + "\n"
-                                    );
+                                    ).append(
+                                            result.getPort()
+                                    ).append(
+                                            " OPEN - "
+                                    ).append(
+                                            result.getService()
+                                    ).append("\n");
                                 }
                             }
 
@@ -226,30 +343,43 @@ public class ScannerGui extends Application {
             });
 
             Thread thread = new Thread(task);
+
             thread.setDaemon(true);
             thread.start();
         });
 
-        VBox layout = new VBox(10);
+        // Main layout
+        VBox layout = new VBox(12);
+
+        layout.setPadding(new Insets(20));
 
         layout.getChildren().addAll(
+                title,
+                subtitle,
+                new Separator(),
                 operationLabel,
                 operationBox,
                 ipLabel,
                 ipField,
-                startPortLabel,
-                startPortField,
-                endPortLabel,
-                endPortField,
+                portBox,
                 scanButton,
-                new Label("Results:"),
+                resultsLabel,
                 results
         );
 
-        Scene scene = new Scene(layout, 700, 500);
+        VBox.setVgrow(results, Priority.ALWAYS);
+
+        // Scene
+        Scene scene = new Scene(
+                layout,
+                750,
+                600
+        );
 
         stage.setTitle("Net Scan");
         stage.setScene(scene);
+        stage.setMinWidth(650);
+        stage.setMinHeight(500);
         stage.show();
     }
 
